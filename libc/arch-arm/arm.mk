@@ -16,6 +16,7 @@ libc_openbsd_src_files_exclude_arm += \
     upstream-openbsd/lib/libc/string/memchr.c \
     upstream-openbsd/lib/libc/string/strcpy.c \
 
+
 #
 # Inherently architecture-specific code.
 #
