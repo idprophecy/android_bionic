@@ -22,6 +22,7 @@ LOCAL_SRC_FILES := \
     upstream-freebsd/lib/msun/bsdsrc/b_tgamma.c \
     upstream-freebsd/lib/msun/src/catrig.c \
     upstream-freebsd/lib/msun/src/catrigf.c \
+    upstream-freebsd/lib/msun/src/dunder.c \
     upstream-freebsd/lib/msun/src/e_acos.c \
     upstream-freebsd/lib/msun/src/e_acosf.c \
     upstream-freebsd/lib/msun/src/e_acosh.c \
@@ -72,6 +73,7 @@ LOCAL_SRC_FILES := \
     upstream-freebsd/lib/msun/src/e_sinhf.c \
     upstream-freebsd/lib/msun/src/e_sqrt.c \
     upstream-freebsd/lib/msun/src/e_sqrtf.c \
+    upstream-freebsd/lib/msun/src/funder.c \
     upstream-freebsd/lib/msun/src/imprecise.c \
     upstream-freebsd/lib/msun/src/k_cos.c \
     upstream-freebsd/lib/msun/src/k_cosf.c \
@@ -186,6 +188,31 @@ LOCAL_SRC_FILES := \
     upstream-freebsd/lib/msun/src/w_drem.c \
     upstream-freebsd/lib/msun/src/w_dremf.c \
 
+# The FreeBSD complex functions appear to be better, but they're incomplete.
+# We take the FreeBSD implementations when they exist, but fill out the rest
+# of <complex.h> from NetBSD...
+LOCAL_SRC_FILES += \
+    upstream-netbsd/lib/libm/complex/cacoshl.c \
+    upstream-netbsd/lib/libm/complex/cacosl.c \
+    upstream-netbsd/lib/libm/complex/casinhl.c \
+    upstream-netbsd/lib/libm/complex/casinl.c \
+    upstream-netbsd/lib/libm/complex/catanhl.c \
+    upstream-netbsd/lib/libm/complex/catanl.c \
+    upstream-netbsd/lib/libm/complex/ccoshl.c \
+    upstream-netbsd/lib/libm/complex/ccosl.c \
+    upstream-netbsd/lib/libm/complex/cephes_subrl.c \
+    upstream-netbsd/lib/libm/complex/cexpl.c \
+    upstream-netbsd/lib/libm/complex/clog.c \
+    upstream-netbsd/lib/libm/complex/clogf.c \
+    upstream-netbsd/lib/libm/complex/clogl.c \
+    upstream-netbsd/lib/libm/complex/cpow.c \
+    upstream-netbsd/lib/libm/complex/cpowf.c \
+    upstream-netbsd/lib/libm/complex/cpowl.c \
+    upstream-netbsd/lib/libm/complex/csinhl.c \
+    upstream-netbsd/lib/libm/complex/csinl.c \
+    upstream-netbsd/lib/libm/complex/ctanhl.c \
+    upstream-netbsd/lib/libm/complex/ctanl.c \
+
 LOCAL_SRC_FILES_32 += \
     fake_long_double.c \
 
@@ -289,6 +316,36 @@ LOCAL_SRC_FILES_EXCLUDE_arm += \
     upstream-freebsd/lib/msun/src/e_sqrtf.c \
     upstream-freebsd/lib/msun/src/s_floor.c \
 
+ifneq (,$(filter cortex-a53 cortex-a53.a57 kryo denver,$(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)))
+LOCAL_SRC_FILES_arm += \
+    arm/ceil.S \
+    arm/floor_aarch32.S \
+    arm/fmax.S \
+    arm/fmin.S \
+    arm/nearbyint.S \
+    arm/rint.S \
+    arm/round.S \
+    arm/trunc.S \
+
+LOCAL_SRC_FILES_EXCLUDE_arm += \
+    arm/floor.S \
+    upstream-freebsd/lib/msun/src/s_ceil.c \
+    upstream-freebsd/lib/msun/src/s_ceilf.c \
+    upstream-freebsd/lib/msun/src/s_floorf.c \
+    upstream-freebsd/lib/msun/src/s_fmax.c \
+    upstream-freebsd/lib/msun/src/s_fmaxf.c \
+    upstream-freebsd/lib/msun/src/s_fmin.c \
+    upstream-freebsd/lib/msun/src/s_fminf.c \
+    upstream-freebsd/lib/msun/src/s_nearbyint.c \
+    upstream-freebsd/lib/msun/src/s_rint.c \
+    upstream-freebsd/lib/msun/src/s_rintf.c \
+    upstream-freebsd/lib/msun/src/s_round.c \
+    upstream-freebsd/lib/msun/src/s_roundf.c \
+    upstream-freebsd/lib/msun/src/s_trunc.c \
+    upstream-freebsd/lib/msun/src/s_truncf.c \
+
+endif #AArch32 CPU Variants
+
 endif
 
 # -----------------------------------------------------------------------------
@@ -297,10 +354,15 @@ endif
 LOCAL_SRC_FILES_arm64 += \
     arm64/ceil.S \
     arm64/fenv.c \
-    arm64/fma.S \
     arm64/floor.S \
+    arm64/fma.S \
+    arm64/fmax.S \
+    arm64/fmin.S \
     arm64/lrint.S \
+    arm64/lround.S \
+    arm64/nearbyint.S \
     arm64/rint.S \
+    arm64/round.S \
     arm64/sqrt.S \
     arm64/trunc.S \
 
@@ -311,14 +373,24 @@ LOCAL_SRC_FILES_EXCLUDE_arm64 += \
     upstream-freebsd/lib/msun/src/s_ceilf.c \
     upstream-freebsd/lib/msun/src/s_fma.c \
     upstream-freebsd/lib/msun/src/s_fmaf.c \
+    upstream-freebsd/lib/msun/src/s_fmax.c \
+    upstream-freebsd/lib/msun/src/s_fmaxf.c \
+    upstream-freebsd/lib/msun/src/s_fmin.c \
+    upstream-freebsd/lib/msun/src/s_fminf.c \
     upstream-freebsd/lib/msun/src/s_floor.c \
     upstream-freebsd/lib/msun/src/s_floorf.c \
     upstream-freebsd/lib/msun/src/s_llrint.c \
     upstream-freebsd/lib/msun/src/s_llrintf.c \
+    upstream-freebsd/lib/msun/src/s_llround.c \
+    upstream-freebsd/lib/msun/src/s_llroundf.c \
     upstream-freebsd/lib/msun/src/s_lrint.c \
     upstream-freebsd/lib/msun/src/s_lrintf.c \
+    upstream-freebsd/lib/msun/src/s_lround.c \
+    upstream-freebsd/lib/msun/src/s_lroundf.c \
     upstream-freebsd/lib/msun/src/s_rint.c \
     upstream-freebsd/lib/msun/src/s_rintf.c \
+    upstream-freebsd/lib/msun/src/s_round.c \
+    upstream-freebsd/lib/msun/src/s_roundf.c \
     upstream-freebsd/lib/msun/src/s_trunc.c \
     upstream-freebsd/lib/msun/src/s_truncf.c \
 
@@ -491,7 +563,6 @@ LOCAL_C_INCLUDES_x86 += $(LOCAL_PATH)/i387
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/upstream-freebsd/lib/msun/src/
 LOCAL_C_INCLUDES_64 += $(LOCAL_PATH)/upstream-freebsd/lib/msun/ld128/
 
-LOCAL_CLANG := $(libm_clang)
 LOCAL_ARM_MODE := arm
 LOCAL_CFLAGS := \
     -D__BIONIC_NO_MATH_INLINES \
@@ -504,6 +575,9 @@ LOCAL_CFLAGS := \
     -Wno-uninitialized \
     -Wno-unknown-pragmas \
     -fvisibility=hidden \
+
+LOCAL_CONLYFLAGS := \
+    -std=gnu11 \
 
 LOCAL_ASFLAGS := \
     -Ibionic/libc \
@@ -546,7 +620,6 @@ LOCAL_LDFLAGS_x86_64 += -Wl,--version-script,$(LOCAL_PATH)/libm.x86_64.map
 
 
 LOCAL_MODULE := libm
-LOCAL_CLANG := $(libm_clang)
 LOCAL_SYSTEM_SHARED_LIBRARIES := libc
 LOCAL_WHOLE_STATIC_LIBRARIES := libm
 

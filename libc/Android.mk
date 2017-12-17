@@ -45,7 +45,6 @@ libc_common_src_files := \
     bionic/getpriority.c \
     bionic/initgroups.c \
     bionic/isatty.c \
-    bionic/memmem.c \
     bionic/pututline.c \
     bionic/sched_cpualloc.c \
     bionic/sched_cpucount.c \
@@ -61,39 +60,6 @@ libc_common_src_files := \
     stdio/stdio_ext.cpp \
     stdlib/atexit.c \
     stdlib/exit.c \
-
-# Fortify implementations of libc functions.
-libc_common_src_files += \
-    bionic/__FD_chk.cpp \
-    bionic/__fgets_chk.cpp \
-    bionic/__fread_chk.cpp \
-    bionic/__fwrite_chk.cpp \
-    bionic/__getcwd_chk.cpp \
-    bionic/__memchr_chk.cpp \
-    bionic/__memmove_chk.cpp \
-    bionic/__memrchr_chk.cpp \
-    bionic/__poll_chk.cpp \
-    bionic/__pread64_chk.cpp \
-    bionic/__pread_chk.cpp \
-    bionic/__pwrite64_chk.cpp \
-    bionic/__pwrite_chk.cpp \
-    bionic/__read_chk.cpp \
-    bionic/__readlink_chk.cpp \
-    bionic/__readlinkat_chk.cpp \
-    bionic/__recvfrom_chk.cpp \
-    bionic/__stpcpy_chk.cpp \
-    bionic/__stpncpy_chk.cpp \
-    bionic/__strchr_chk.cpp \
-    bionic/__strlcat_chk.cpp \
-    bionic/__strlcpy_chk.cpp \
-    bionic/__strlen_chk.cpp \
-    bionic/__strncat_chk.cpp \
-    bionic/__strncpy_chk.cpp \
-    bionic/__strrchr_chk.cpp \
-    bionic/__umask_chk.cpp \
-    bionic/__vsnprintf_chk.cpp \
-    bionic/__vsprintf_chk.cpp \
-    bionic/__write_chk.cpp
 
 libc_bionic_ndk_src_files := \
     bionic/abort.cpp \
@@ -136,6 +102,7 @@ libc_bionic_ndk_src_files := \
     bionic/fgetxattr.cpp \
     bionic/flistxattr.cpp \
     bionic/flockfile.cpp \
+    bionic/fortify.cpp \
     bionic/fpclassify.cpp \
     bionic/fsetxattr.cpp \
     bionic/ftruncate.cpp \
@@ -164,6 +131,7 @@ libc_bionic_ndk_src_files := \
     bionic/mbrtoc16.cpp \
     bionic/mbrtoc32.cpp \
     bionic/mbstate.cpp \
+    bionic/memmem.cpp \
     bionic/mempcpy.cpp \
     bionic/mkdir.cpp \
     bionic/mkfifo.cpp \
@@ -1393,10 +1361,6 @@ LOCAL_ADDITIONAL_DEPENDENCIES := \
     $(LOCAL_PATH)/libc.arm.brillo.map \
     $(LOCAL_PATH)/libc.mips.brillo.map \
     $(LOCAL_PATH)/libc.x86.brillo.map \
-
-# Leave the symbols in the shared library so that stack unwinders can produce
-# meaningful name resolution.
-LOCAL_STRIP_MODULE := keep_symbols
 
 # Do not pack libc.so relocations; see http://b/20645321 for details.
 LOCAL_PACK_MODULE_RELOCATIONS := false
